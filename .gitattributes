@@ -1,0 +1,49 @@
+# ===========================================================================
+#  行尾与二进制规范化(仅影响今后的提交/检出,不会改写已提交内容)
+# ===========================================================================
+
+# 默认:自动识别文本文件,仓库内统一以 LF 存储
+* text=auto
+
+# 显式声明常见文本类型
+*.java       text
+*.xml        text
+*.yml        text
+*.yaml       text
+*.properties text
+*.sql        text
+*.json       text
+*.js         text
+*.ts         text
+*.vue        text
+*.css        text
+*.scss       text
+*.html       text
+*.md         text
+*.txt        text
+
+# 行尾敏感脚本
+*.sh         text eol=lf
+*.bat        text eol=crlf
+*.cmd        text eol=crlf
+
+# 二进制文件:不做行尾转换、不做文本 diff
+*.docx       binary
+*.doc        binary
+*.xlsx       binary
+*.xls        binary
+*.pdf        binary
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.gif        binary
+*.ico        binary
+*.jar        binary
+*.woff       binary
+*.woff2      binary
+*.ttf        binary
+*.eot        binary
+
+# 语言统计:让 GitHub 将被测系统副本与文档计为非主代码,突出测试套件本身
+docs/**                       linguist-documentation
+system-under-test/**          linguist-vendored

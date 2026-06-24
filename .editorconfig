@@ -1,0 +1,26 @@
+# EditorConfig — 统一各编辑器/IDE 的基础格式约定  https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Java 后端:4 空格缩进
+[*.{java,xml}]
+indent_size = 4
+
+# Maven / properties
+[*.properties]
+indent_size = 4
+
+# Windows 批处理脚本保留 CRLF
+[*.{bat,cmd}]
+end_of_line = crlf
+
+# Markdown:保留行尾空格(可能用于换行)
+[*.md]
+trim_trailing_whitespace = false
