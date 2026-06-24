@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.labs.apply.mapper.LabScheduleMapper">
+    
+    <resultMap type="LabSchedule" id="LabScheduleResult">
+        <result property="id"    column="id"    />
+        <result property="labId"    column="lab_id"    />
+        <result property="date"    column="date"    />
+        <result property="timeSlot"    column="time_slot"    />
+        <result property="isAvailable"    column="is_available"    />
+    </resultMap>
+
+    <sql id="selectLabScheduleVo">
+        select id, lab_id, date, time_slot, is_available from lab_schedule
+    </sql>
+
+    <select id="selectLabScheduleList" parameterType="LabSchedule" resultMap="LabScheduleResult">
+        <include refid="selectLabScheduleVo"/>
+        <where>  
+            <if test="labId != null "> and lab_id = #{labId}</if>
+            <if test="date != null "> and date = #{date}</if>
+            <if test="timeSlot != null "> and time_slot = #{timeSlot}</if>
+            <if test="isAvailable != null "> and is_available = #{isAvailable}</if>
+            <if test="note != null  and note != ''"> and note = #{note}</if>
+        </where>
+    </select>
+    
+    <select id="selectLabScheduleById" parameterType="Long" resultMap="LabScheduleResult">
+        <include refid="selectLabScheduleVo"/>
+        where id = #{id}
+    </select>
+
+    <update id="updateLabSchedule" parameterType="LabSchedule">
+        update lab_schedule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="labId != null">lab_id = #{labId},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="timeSlot != null">time_slot = #{timeSlot},</if>
+            <if test="isAvailable != null">is_available = #{isAvailable},</if>
+            <if test="note != null">note = #{note},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLabScheduleById" parameterType="Long">
+        delete from lab_schedule where id = #{id}
+    </delete>
+
+    <delete id="deleteLabScheduleByIds" parameterType="String">
+        delete from lab_schedule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByReservation">
+        DELETE FROM lab_schedule
+        WHERE lab_id = #{labId}
+          AND date = #{reservationDate}
+          AND time_slot = #{timeSlot}
+    </delete>
+
+    <insert id="batchInsertLabSchedules">
+        INSERT INTO lab_schedule (lab_id, date, time_slot, is_available)
+        VALUES
+        <foreach collection="labIds" item="labId">
+            <foreach collection="timeSlots" item="slot" separator=",">
+                (#{labId}, #{date}, #{slot}, 1)
+            </foreach>
+        </foreach>
+    </insert>
+
+    <insert id="insertLabSchedule" parameterType="LabSchedule">
+        INSERT INTO lab_schedule (
+        lab_id,
+        date,           <!-- 数据库列名与实体类字段名一致 -->
+        time_slot,
+        is_available
+        ) VALUES (
+        #{labId},
+        #{date},        <!-- 对应 setDate() -->
+        #{timeSlot},
+        #{isAvailable}
+        )
+    </insert>
+
+    <select id="selectLabSchedulesByDate" parameterType="java.time.LocalDate" resultMap="LabScheduleResult">
+        select id, lab_id, date, time_slot, is_available
+        from lab_schedule
+        where date = #{date}
+    </select>
+
+</mapper>

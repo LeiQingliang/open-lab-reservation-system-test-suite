@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.labs.labs_browse.mapper.LabsMapper">
+    
+    <resultMap type="Labs" id="LabsResult">
+        <result property="id"    column="id"    />
+        <result property="labName"    column="lab_name"    />
+        <result property="location"    column="location"    />
+        <result property="capacity"    column="capacity"    />
+        <result property="description"    column="description"    />
+        <result property="createdAt"    column="created_at"    />
+        <result property="updatedAt"    column="updated_at"    />
+        <result property="status" column="status" />
+    </resultMap>
+
+    <sql id="selectLabsVo">
+        id, lab_name, location, capacity,status, description, created_at, updated_at
+    </sql>
+
+    <select id="selectLabsList" parameterType="Labs" resultMap="LabsResult">
+        select <include refid="selectLabsVo"/>
+        from labs
+        <where>
+            <if test="labName != null  and labName != ''"> and lab_name like concat('%', #{labName}, '%')</if>
+            <if test="location != null  and location != ''"> and location like concat('%', #{location}, '%')</if>
+            <if test="capacity != null "> and capacity &gt;= #{capacity}</if>
+        </where>
+    </select>
+
+    <select id="selectLabsById" parameterType="Long" resultMap="LabsResult">
+        SELECT id, lab_name, location, capacity, status, description, created_at, updated_at
+        FROM labs
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertLabs" parameterType="Labs" useGeneratedKeys="true" keyProperty="id">
+        insert into labs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="labName != null and labName != ''">lab_name,</if>
+            <if test="location != null and location != ''">location,</if>
+            <if test="capacity != null">capacity,</if>
+            <if test="description != null">description,</if>
+            <if test="createdAt != null">created_at,</if>
+            <if test="updatedAt != null">updated_at,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="labName != null and labName != ''">#{labName},</if>
+            <if test="location != null and location != ''">#{location},</if>
+            <if test="capacity != null">#{capacity},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createdAt != null">#{createdAt},</if>
+            <if test="updatedAt != null">#{updatedAt},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLabs" parameterType="Labs">
+        update labs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="labName != null and labName != ''">lab_name = #{labName},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="capacity != null">capacity = #{capacity},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="status != null">status = #{status},</if> <!-- ✅ 加上这一句 -->
+            <if test="createdAt != null">created_at = #{createdAt},</if>
+            <if test="updatedAt != null">updated_at = #{updatedAt},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLabsById" parameterType="Long">
+        delete from labs where id = #{id}
+    </delete>
+
+    <delete id="deleteLabsByIds" parameterType="String">
+        delete from labs where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
