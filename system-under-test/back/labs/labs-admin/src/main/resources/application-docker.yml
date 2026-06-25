@@ -1,0 +1,39 @@
+# ============================================================================
+# 容器化（Docker Compose）专用配置覆盖
+# 通过 SPRING_PROFILES_ACTIVE=druid,docker 激活；docker 在 druid 之后加载，
+# 故此处的同名键优先级高于 application.yml / application-druid.yml。
+# 所有连接信息支持用环境变量覆盖，下方为容器内默认值（compose 服务名）。
+# ============================================================================
+spring:
+  # ---- 数据源：主机名指向 compose 中的 mysql 服务，关闭 SSL ----
+  datasource:
+    druid:
+      master:
+        url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:open_lab_reservation}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+        username: ${MYSQL_USER:root}
+        password: ${MYSQL_PASSWORD:root}
+
+  # ---- Redis：主机名指向 compose 中的 redis 服务 ----
+  redis:
+    host: ${REDIS_HOST:redis}
+    port: ${REDIS_PORT:6379}
+    database: ${REDIS_DATABASE:0}
+    password: ${REDIS_PASSWORD:}
+
+  # 容器内关闭 devtools 热部署
+  devtools:
+    restart:
+      enabled: false
+
+  # 兼容 springfox 3.0.0：固定使用 Ant 风格路径匹配，避免运行期 NPE
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+# 文件上传/头像路径：改为 Linux 容器内可写路径（compose 挂载持久化卷）
+ruoyi:
+  profile: ${RUOYI_PROFILE:/home/ruoyi/uploadPath}
+
+# 令牌密钥：建议通过环境变量注入强随机值
+token:
+  secret: ${TOKEN_SECRET:abcdefghijklmnopqrstuvwxyz}

@@ -78,7 +78,14 @@ open-lab-reservation-system-test-suite/
 
 被测系统是基于 **若依(RuoYi)v3.8.9** 前后端分离框架二次开发的「开放实验室网上预约管理系统」,源码完整存放于 [`system-under-test/`](system-under-test/),便于复现测试环境。自写业务集中在后端 `labs-management` 模块(实验室浏览、排课发布、预约)及对应前端视图。
 
-完整环境搭建与启动步骤见 **[如何启动项目.md](docs/guides/如何启动项目.md)**。
+### 🚀 一键启动（推荐）
+
+只需安装 **Docker Desktop**，在仓库根目录运行 `start.bat` / `./start.ps1`（Windows）或 `./start.sh`（Linux/macOS），
+即可自动构建并拉起 MySQL + Redis + 后端 + 前端四个容器，无需本机安装 JDK/Maven/Node/MySQL/Redis。
+
+启动后访问 **http://localhost:81** ，使用 `admin / admin123` 登录。停止用 `stop.bat` / `./stop.sh`。
+
+完整环境搭建与启动步骤（含 Docker 一键启动与传统手动方式）见 **[如何启动项目.md](docs/guides/如何启动项目.md)**。
 
 ### 技术栈
 

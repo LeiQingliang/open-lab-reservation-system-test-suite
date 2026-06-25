@@ -12,8 +12,7 @@
     <artifactId>labs-management</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <!-- 与父 POM java.version=1.8 保持一致；此前的 compiler 17 与 JDK8 构建冲突，已移除 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

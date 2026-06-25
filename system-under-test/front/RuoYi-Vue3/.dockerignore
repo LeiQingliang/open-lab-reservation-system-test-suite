@@ -1,0 +1,7 @@
+# 必须排除 node_modules：避免把本机(Windows/不同平台)依赖拷进 Linux 镜像，
+# 覆盖容器内 pnpm 安装的正确平台二进制(esbuild 等)
+node_modules
+dist
+.git
+*.log
+npm-debug.log*

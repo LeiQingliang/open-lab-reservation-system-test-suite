@@ -5,6 +5,7 @@
   "author": "santh",
   "license": "MIT",
   "type": "module",
+  "packageManager": "pnpm@9.15.4",
   "scripts": {
     "dev": "vite",
     "build:prod": "vite build",
@@ -45,5 +46,11 @@
     "vite": "5.0.4",
     "vite-plugin-compression": "0.5.1",
     "vite-plugin-svg-icons": "2.0.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "vue-demi"
+    ]
   }
 }
