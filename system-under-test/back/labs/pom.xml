@@ -24,7 +24,7 @@
         <bitwalker.version>1.21</bitwalker.version>
         <swagger.version>3.0.0</swagger.version>
         <kaptcha.version>2.3.3</kaptcha.version>
-        <pagehelper.boot.version>1.4.7</pagehelper.boot.version>
+        <pagehelper.boot.version>4.1.0</pagehelper.boot.version>
         <fastjson.version>2.0.53</fastjson.version>
         <oshi.version>6.6.5</oshi.version>
         <commons.io.version>2.13.0</commons.io.version>
