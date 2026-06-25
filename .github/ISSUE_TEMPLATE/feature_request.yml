@@ -1,0 +1,47 @@
+name: 💡 功能 / 测试增强建议
+description: 建议新的测试用例、工程化改进或文档增强
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: 感谢你的建议！清晰的动机描述有助于我们评估优先级。
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解决的问题 / 动机
+      description: 这个建议想解决什么痛点？例如「预约冲突缺少并发测试」。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+      description: 你希望新增/改动什么？越具体越好（如新增的测试场景、CI 步骤、文档章节）。
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: 建议类型
+      options:
+        - 新增测试用例 / 测试场景
+        - 工程化（CI / 覆盖率 / 构建）
+        - 文档完善
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 备选方案（可选）
+      description: 你考虑过的其他做法。
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已搜索过现有 Issue，确认没有重复。
+          required: true

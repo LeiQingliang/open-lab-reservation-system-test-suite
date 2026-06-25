@@ -54,10 +54,35 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
-                <configuration>
-                    <!-- 课程设计阶段：测试失败不阻断打包，便于演示与提交 -->
-                    <testFailureIgnore>true</testFailureIgnore>
-                </configuration>
+                <!--
+                  注意：此前为方便课程设计演示曾设 <testFailureIgnore>true</testFailureIgnore>，
+                  它会让任何用例失败仍返回 BUILD SUCCESS，从而使 CI 永远显示绿色、掩盖回归。
+                  现已移除，保持 Surefire 默认行为（测试失败即构建失败），让 CI 成为可信的质量门禁。
+                  如确需在打包阶段临时容忍失败，可在命令行追加 -Dmaven.test.failure.ignore=true。
+                -->
+            </plugin>
+
+            <!-- JaCoCo 代码覆盖率：prepare-agent 注入探针，report 在 test 阶段产出行/分支覆盖率 -->
+            <!-- 报告输出 target/site/jacoco/{index.html, jacoco.xml, jacoco.csv}，供 CI 上传与统计 -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

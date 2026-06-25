@@ -1,0 +1,105 @@
+name: CI
+
+# 软件测试套件的核心质量门禁：在 JDK 8 与 21 上自动运行 labs-management 的全部 JUnit5 单元/接口测试，
+# 发布测试报告并产出 JaCoCo 覆盖率。被测系统的测试为纯 Mockito + MockMvc(standaloneSetup)，
+# 不依赖数据库/Redis/Spring 上下文，因此可在 Runner 上离线稳定运行。
+
+on:
+  push:
+    branches: [main]
+    # 仅在影响测试结果的路径变更时触发，纯文档改动不空跑 CI
+    paths:
+      - 'system-under-test/back/labs/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    paths:
+      - 'system-under-test/back/labs/**'
+      - '.github/workflows/ci.yml'
+  workflow_dispatch: {}
+
+# 同一分支的新推送自动取消仍在排队/运行的旧任务，节省额度
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+env:
+  # 被测系统后端（Maven 多模块 reactor）所在目录；其上方无聚合 pom，必须在此目录构建
+  BACKEND_DIR: system-under-test/back/labs
+
+jobs:
+  test:
+    name: Test (JDK ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 编译目标为 Java 8（pom java.version=1.8，Docker 镜像内置 JDK 8）；
+        # 同时在 21 上验证前向兼容。注意：JDK 25+ 已移除 -source/-target 8，故不纳入矩阵。
+        java: ['8', '21']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      - name: Run unit & API tests (labs-management)
+        working-directory: ${{ env.BACKEND_DIR }}
+        # -am 必须保留：SysPostServiceImplTest 测的是 labs-system 模块，需一并编译上游 framework/system/common
+        run: mvn -B --no-transfer-progress -pl labs-management -am clean test
+
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v5
+        if: always()
+        with:
+          report_paths: '${{ env.BACKEND_DIR }}/labs-management/target/surefire-reports/TEST-*.xml'
+          check_name: 'Test Report (JDK ${{ matrix.java }})'
+          include_passed: true
+          detailed_summary: true
+
+      - name: Upload Surefire reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: surefire-reports-jdk${{ matrix.java }}
+          path: '${{ env.BACKEND_DIR }}/labs-management/target/surefire-reports/'
+          if-no-files-found: warn
+
+      # 覆盖率仅在 JDK 21 这一组产出，避免重复 artifact 与重复摘要
+      - name: Summarize JaCoCo coverage
+        if: ${{ always() && matrix.java == '21' }}
+        run: |
+          CSV="${BACKEND_DIR}/labs-management/target/site/jacoco/jacoco.csv"
+          if [ ! -f "$CSV" ]; then
+            echo "jacoco.csv 未找到（测试可能未成功执行），跳过覆盖率摘要" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          # jacoco.csv 列：...,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,...
+          awk -F',' 'NR>1 {im+=$4; ic+=$5; bm+=$6; bc+=$7; lm+=$8; lc+=$9}
+            END {
+              inst = (im+ic)>0 ? 100*ic/(im+ic) : 0;
+              br   = (bm+bc)>0 ? 100*bc/(bm+bc) : 0;
+              line = (lm+lc)>0 ? 100*lc/(lm+lc) : 0;
+              printf("## 📊 JaCoCo 覆盖率 (JDK 21)\n\n");
+              printf("| 指标 | 覆盖率 |\n|------|--------|\n");
+              printf("| 指令 Instruction | %.1f%% |\n", inst);
+              printf("| 分支 Branch | %.1f%% |\n", br);
+              printf("| 行 Line | %.1f%% (%d/%d) |\n", line, lc, lc+lm);
+            }' "$CSV" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload JaCoCo coverage report
+        if: ${{ always() && matrix.java == '21' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-coverage-report
+          path: '${{ env.BACKEND_DIR }}/labs-management/target/site/jacoco/'
+          if-no-files-found: warn

@@ -24,6 +24,7 @@
 
 # 行尾敏感脚本
 *.sh         text eol=lf
+mvnw         text eol=lf
 *.bat        text eol=crlf
 *.cmd        text eol=crlf
 
@@ -47,3 +48,9 @@
 # 语言统计:让 GitHub 将被测系统副本与文档计为非主代码,突出测试套件本身
 docs/**                       linguist-documentation
 system-under-test/**          linguist-vendored
+
+# 例外:自研的单元/接口测试代码是本仓库的核心交付物,应计入语言统计
+system-under-test/back/labs/labs-management/src/test/**   linguist-vendored=false
+
+# 生成产物:在 PR diff 中默认折叠,不参与语言统计
+system-under-test/front/RuoYi-Vue3/pnpm-lock.yaml         linguist-generated=true

@@ -28,9 +28,11 @@ replay_pid*
 
 # ----- Maven -----
 target/
-!.mvn/wrapper/maven-wrapper.jar
 .mvn/timing.properties
-.mvn/wrapper/maven-wrapper.properties
+# Maven Wrapper 文件需入库(mvnw / mvnw.cmd / .mvn/wrapper/maven-wrapper.properties)，
+# 仅忽略 wrapper 下载缓存的发行版与本地 jar
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/dists/
 
 # ----- Node / 前端构建 -----
 node_modules/
@@ -65,3 +67,9 @@ pnpm-debug.log*
 Thumbs.db
 ehthumbs.db
 desktop.ini
+
+# ----- 环境变量(可能含口令/密钥,不入库;仅提交 .env.example 模板) -----
+.env
+.env.local
+.env.*.local
+!.env.example

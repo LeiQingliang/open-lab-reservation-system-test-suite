@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "如果你在研究或教学中使用了本项目，请按如下方式引用。"
+title: "开放实验室预约系统 · 软件测试套件 (Open Lab Reservation System — Software Test Suite)"
+abstract: >-
+  「开放实验室网上预约管理系统」的完整软件测试工程交付物，涵盖从需求分析、测试计划、
+  用例设计、单元/接口/性能测试实现，到缺陷跟踪与测试报告的软件测试全生命周期文档，
+  并内附基于 RuoYi 二次开发的被测系统源码以复现测试环境。
+type: software
+authors:
+  - family-names: "Lei"
+    given-names: "Qingliang"
+    alias: "雷清亮"
+    email: "qinglianglei0912@gmail.com"
+version: "1.0.0"
+date-released: "2026-06-25"
+license: MIT
+repository-code: "https://github.com/LeiQingliang/open-lab-reservation-system-test-suite"
+url: "https://github.com/LeiQingliang/open-lab-reservation-system-test-suite"
+keywords:
+  - software-testing
+  - junit5
+  - mockito
+  - test-suite
+  - spring-boot
+  - vue3
+  - ruoyi
+  - course-design

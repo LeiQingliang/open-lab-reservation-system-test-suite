@@ -1,0 +1,42 @@
+version: 2
+# 自动检查依赖更新并提交 PR。
+# 注意：被测系统(system-under-test/)基于 vendored RuoYi，部分依赖版本与 JDK 8 / Spring Boot 2.5
+# 强绑定（升级可能破坏可复现性），故 maven/npm 生态保持保守的 PR 上限，按需合并即可。
+updates:
+  # GitHub Actions：保持 CI 所用 Action 版本新鲜（最安全，建议优先合并）
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Shanghai"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  # 被测系统后端（Maven 多模块 reactor）
+  - package-ecosystem: "maven"
+    directory: "/system-under-test/back/labs"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build"
+    labels:
+      - "dependencies"
+      - "java"
+
+  # 被测系统前端（Vue3 + pnpm）
+  - package-ecosystem: "npm"
+    directory: "/system-under-test/front/RuoYi-Vue3"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build"
+    labels:
+      - "dependencies"
+      - "frontend"

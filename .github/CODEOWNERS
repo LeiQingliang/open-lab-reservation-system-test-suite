@@ -1,0 +1,14 @@
+# CODEOWNERS —— 指定各区域的默认评审人 / 负责人
+# 文档：https://docs.github.com/zh/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# 兜底：所有文件
+*                                   @LeiQingliang
+
+# 测试套件核心：单元/接口测试代码
+/system-under-test/back/labs/labs-management/src/test/   @LeiQingliang
+
+# 测试工程文档
+/docs/                              @LeiQingliang
+
+# 工程化配置（CI / 模板 / 依赖）
+/.github/                           @LeiQingliang
