@@ -90,8 +90,10 @@ services:
     container_name: olrs-frontend
     ports:
       - "${FRONTEND_HOST_PORT:-81}:80"
+    # 等后端健康(已连上 MySQL/Redis)再起前端，避免开页面即 502
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:

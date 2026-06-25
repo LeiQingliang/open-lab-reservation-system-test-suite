@@ -38,5 +38,5 @@ ENV SPRING_PROFILES_ACTIVE=druid,docker \
     JAVA_OPTS="-Xms512m -Xmx1024m -Duser.timezone=Asia/Shanghai -Djava.awt.headless=true"
 EXPOSE 8080
 HEALTHCHECK --interval=15s --timeout=5s --start-period=120s --retries=12 \
-  CMD curl -fsS http://localhost:8080/ || exit 1
+  CMD curl -fsS http://127.0.0.1:8080/ || exit 1
 ENTRYPOINT ["sh","-c","exec java $JAVA_OPTS -jar /app/labs-admin.jar"]
