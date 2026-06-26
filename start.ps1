@@ -67,3 +67,4 @@ if ($allOk) {
 }
 Write-Host "查看状态： docker compose -f system-under-test/docker-compose.yml ps"
 Write-Host "停止服务： ./stop.ps1   （加 -Wipe 可清空数据卷）"
+

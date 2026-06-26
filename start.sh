@@ -57,3 +57,4 @@ else
   echo "   docker compose logs -f mysql redis backend frontend"
 fi
 echo "停止服务： ./stop.sh        （加 --wipe 清空数据卷）"
+
