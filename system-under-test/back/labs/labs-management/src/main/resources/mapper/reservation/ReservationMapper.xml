@@ -175,6 +175,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           AND reservation_date = #{reservationDate}
           AND time_slot = #{timeSlot}
           AND status = 0
-          AND id != #{id}
+          <!--
+            BUG-001 修复: id 排除条件仅在传入 id 非空时生效。
+            提交预约(insertReservation)时 conflictQuery 不含 id, 若无条件拼接 "AND id != #{id}",
+            在 MySQL 中 "id != NULL" 恒为 UNKNOWN, 会过滤掉全部行, 导致冲突检测在该路径形同虚设。
+            审核(reviewReservation)时 conflictQuery 设置了 id, 需排除自身, 此时该条件照常生效。
+          -->
+          <if test="id != null">
+              AND id != #{id}
+          </if>
     </select>
 </mapper>
