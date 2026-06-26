@@ -1,0 +1,15 @@
+{
+  "name": "olrs-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "开放实验室网上预约管理系统 端到端(E2E)与接口冒烟测试脚手架，基于 Playwright Test。",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "install:browsers": "playwright install --with-deps chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
